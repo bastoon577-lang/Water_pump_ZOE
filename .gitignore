@@ -1,0 +1,10 @@
+# Ignore all build and distribution directories
+build/
+dist/
+__pycache__/
+
+# Ignore PyInstaller specification files
+*.spec
+
+# Exception: explicitly allow the compiled executable
+!water_pump.exe
