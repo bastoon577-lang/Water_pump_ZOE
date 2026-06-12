@@ -29,13 +29,17 @@ Plutôt que d'utiliser une "boîte noire" en passant par diverses applications t
 
 ## Matériel nécessaire
 
-Vous trouverez le matériel dans le [Wiki](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki#mat%C3%A9riel-n%C3%A9cessaire)
+Vous trouverez le matériel dans le [Wiki](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Mat%C3%A9riel-n%C3%A9cessaire).
 
 <div id='process'/>
 
 ## Procedure à suivre
 
-Vous trouverez la procedure à suivre dans le [Wiki](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki#proc%C3%A9dure-%C3%A0-suivre)
+Vous trouverez la procedure à suivre dans le [Wiki](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Proc%C3%A9dure-%C3%A0-suivre): avec
+ 1. [Télécharger l'utilitaire water_pump.exe](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Proc%C3%A9dure-%C3%A0-suivre#t%C3%A9l%C3%A9charger-lutilitaire-water_pumpexe)
+ 2. [Préparer la voiture](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Proc%C3%A9dure-%C3%A0-suivre#pr%C3%A9parer-la-voiture)
+ 3. [Appairage du KONNWEI](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Proc%C3%A9dure-%C3%A0-suivre#appairage-du-konnwei)
+ 4. [Utilisation de l'utilitaire water_pump.exe](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Proc%C3%A9dure-%C3%A0-suivre#utilisation-de-lutilitaire-water_pumpexe)
 
 <div id='contribute'/>
 
