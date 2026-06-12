@@ -35,7 +35,7 @@ Vous trouverez le matériel dans le [Wiki](https://github.com/bastoon577-lang/Wa
 
 ## Procedure à suivre
 
-Vous trouverez la procedure à suivre dans le [Wiki](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Proc%C3%A9dure-%C3%A0-suivre): avec
+Vous trouverez la procedure à suivre dans le [Wiki](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Proc%C3%A9dure-%C3%A0-suivre) avec :
  1. [Télécharger l'utilitaire water_pump.exe](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Proc%C3%A9dure-%C3%A0-suivre#t%C3%A9l%C3%A9charger-lutilitaire-water_pumpexe)
  2. [Préparer la voiture](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Proc%C3%A9dure-%C3%A0-suivre#pr%C3%A9parer-la-voiture)
  3. [Appairage du KONNWEI](https://github.com/bastoon577-lang/Water_pump_ZOE/wiki/Proc%C3%A9dure-%C3%A0-suivre#appairage-du-konnwei)
