@@ -1,4 +1,4 @@
-#!/usr/bin/env python3           
+#!/usr/bin/env python3          
 import argparse
 import logging
 import serial
@@ -14,6 +14,7 @@ def parse_arguments():
     p.add_argument("-b","--baudrate",type=int,default=38400,help="permet de choisir la vitesse de communication")
     p.add_argument("-v","--verbosity",action="count",default=0,help="permet de choisir le niveau de verbosité")
     p.add_argument("-r","--reset",action="store_true",help="permet de reseter les compteurs")
+    p.add_argument("-t","--type",default="Zoe 22",choices=["Zoe 22", "Zoe 41"],help="permet de choisir le type de Zoe (Zoe 22 ou Zoe 41)")
     return p.parse_args()
 
 def configure_logging(level):
@@ -55,7 +56,6 @@ def init_reset(ser):
     send_cmd(ser,"ATSP6")
     send_cmd(ser,"ATSH7E4")
     send_cmd(ser,"10C0")
-    send_cmd(ser,"223349")
 
 def decode_wep_response(response_str, cmd):
     lines=[l.strip() for l in response_str.split("\n") if l.strip()]
@@ -71,24 +71,35 @@ def decode_wep_response(response_str, cmd):
                 return val,f"{h}h {m}m {s}s"
     return None,"Erreur"
 
-def read_wep(ser, output=print):
-    pids={"Low Speed WEP":"223349","Middle Speed WEP":"22334A","High Speed WEP":"22334B"}
-    total=0; results={}
-    for name,cmd in pids.items():
-        sec,txt=decode_wep_response(send_cmd(ser,cmd),cmd)
-        results[name]=(sec,txt)
-        if sec is not None: total+=sec
-    output("="*20+" RESULTATS ZOE "+"="*20)
-    for name,(_,txt) in results.items():
-        output(f"{name:<20} : {txt}")
-    h=total//3600;m=(total%3600)//60
-    output("-"*55)
-    output(f"Temps total cumulé WEP : {h}h {m}m")
+def read_wep(ser, zoe_type="Zoe 22", output=print):
+    pids = {
+        "Low Speed WEP": "223349",
+        "Middle Speed WEP": "22334A",
+        "High Speed WEP": "22334B"
+    }
+    
+    if zoe_type == "Zoe 41":
+        pids["Total Speed WEP (Zoe 41)"] = "223531"
+    
+    results = {}
+    for name, cmd in pids.items():
+        sec, txt = decode_wep_response(send_cmd(ser, cmd), cmd)
+        results[name] = (sec, txt)
+        
+    output("="*20 + " RESULTATS ZOE " + "="*20)
+    for name, (_, txt) in results.items():
+        output(f"{name:<30} : {txt}")
     output("="*55)
 
-def reset_wep(ser, output=print):
+def reset_wep(ser, zoe_type="Zoe 22", output=print):
     init_reset(ser)
-    for c in ["2E334900000000","2E334A00000000","2E334B00000000"]:
+    
+    commands = ["2E334900000000", "2E334A00000000", "2E334B00000000"]
+    
+    if zoe_type == "Zoe 41":
+        commands.append("2E353100000000")
+        
+    for c in commands:
         output(f"{c} -> {send_cmd(ser,c)}")
 
 def run_cli(args):
@@ -97,24 +108,29 @@ def run_cli(args):
     ser.reset_input_buffer(); ser.reset_output_buffer()
     try:
         if args.reset:
-            reset_wep(ser)
+            reset_wep(ser, zoe_type=args.type)
         else:
             init_read(ser)
-            read_wep(ser)
+            read_wep(ser, zoe_type=args.type)
     finally:
         ser.close()
 
 def launch_gui():
     root=tk.Tk()
     root.title("Renault Zoe Water Pump")
-    root.geometry("800x500")
+    root.geometry("750x400")
 
     top=ttk.Frame(root); top.pack(fill="x",padx=10,pady=10)
+    
     ttk.Label(top,text="Port COM :").pack(side="left")
-
     ports=[p.device for p in list_ports.comports()]
     port_var=tk.StringVar(value=ports[0] if ports else "COM6")
     ttk.Combobox(top,textvariable=port_var,values=ports,width=12).pack(side="left",padx=5)
+
+    ttk.Label(top, text="Type Zoe :").pack(side="left", padx=(10, 5))
+    zoe_type_var = tk.StringVar(value="Zoe 22")
+    zoe_type_combo = ttk.Combobox(top, textvariable=zoe_type_var, values=["Zoe 22", "Zoe 41"], width=10, state="readonly")
+    zoe_type_combo.pack(side="left")
 
     out=tk.Text(root,bg="black",fg="white",insertbackground="white",state="disabled")
     out.pack(fill="both",expand=True,padx=10,pady=(0,10))
@@ -140,19 +156,19 @@ def launch_gui():
         try:
             ser=open_ser()
             init_read(ser)
-            read_wep(ser, log)
+            read_wep(ser, zoe_type=zoe_type_var.get(), output=log)
             ser.close()
         except Exception as e:
             messagebox.showerror("Erreur", str(e))
 
     def do_reset():
         if not messagebox.askyesno("Confirmation","Cette action va remettre à 0 les compteurs de pompe à eau.\n"
-                                   "Souhaitez vous continuer ?"):
+                                                  "Souhaitez vous continuer ?"):
             return
         clear()
         try:
             ser=open_ser()
-            reset_wep(ser, log)
+            reset_wep(ser, zoe_type=zoe_type_var.get(), output=log)
             ser.close()
         except Exception as e:
             messagebox.showerror("Erreur", str(e))
@@ -164,10 +180,6 @@ def launch_gui():
 
 if __name__ == "__main__":
     if len(sys.argv) == 1:
-        """
-            That script is built without --windowed so it's necessary to remove
-            the console to be great and keep it in console mode !
-        """
         if sys.platform == 'win32':
             import ctypes
             hwnd = ctypes.windll.kernel32.GetConsoleWindow()
